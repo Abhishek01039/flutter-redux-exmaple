@@ -5,7 +5,7 @@ import 'package:redux_example/model/data.dart';
 import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
 import 'package:redux_example/redux/reducer.dart';
-import 'package:redux_example/screens/add_book_screen.dart';
+import 'package:redux_example/screens/book_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
                       icon: const Icon(Icons.edit),
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AddBookScreen(
+                          builder: (context) => BookScreen(
                             id: state.state.book[index].id,
                           ),
                         ),
@@ -74,7 +74,7 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AddBookScreen(),
+            builder: (context) => BookScreen(),
           ),
         ),
         child: const Icon(Icons.add),

@@ -4,8 +4,8 @@ import 'package:redux_example/model/data.dart';
 import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
 
-class AddBookScreen extends StatelessWidget {
-  AddBookScreen({Key key, this.id}) : super(key: key);
+class BookScreen extends StatelessWidget {
+  BookScreen({Key key, this.id}) : super(key: key);
 
   final int id;
   final TextEditingController authorController = TextEditingController();
