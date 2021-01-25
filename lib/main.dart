@@ -6,13 +6,18 @@ import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
 import 'package:redux_example/redux/reducer.dart';
 import 'package:redux_example/screens/book_screen.dart';
+import 'package:redux_thunk/redux_thunk.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final store = Store(bookReducer, initialState: AppState(book: bookData));
+  final store = Store(
+    bookReducer,
+    initialState: AppState(book: bookData),
+    middleware: [thunkMiddleware],
+  );
   @override
   Widget build(BuildContext context) {
     return StoreProvider(
@@ -30,9 +35,26 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Redux"),
+        actions: [
+          IconButton(
+            onPressed: () => StoreProvider.of<AppState>(context)
+                .dispatch(waitAndDispatch(2)),
+            icon: Icon(Icons.ac_unit),
+          )
+        ],
       ),
       body: StoreBuilder<AppState>(
         builder: (context, Store<AppState> state) {
+          if (state.state.isError) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+          if (state.state.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           return ListView.builder(
             itemBuilder: (context, index) {
               return ListTile(

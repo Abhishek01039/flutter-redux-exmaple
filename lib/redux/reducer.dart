@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:redux_example/model/data.dart';
 import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
+import 'package:redux_thunk/redux_thunk.dart';
+import 'package:redux/redux.dart';
+import 'package:http/http.dart' as http;
 
 AppState bookReducer(AppState appState, dynamic action) {
   if (action is AddBook) {
@@ -15,6 +20,34 @@ AppState bookReducer(AppState appState, dynamic action) {
     List<Book> book = [...appState.book];
     book[book.indexWhere((element) => element.id == action.id)] = action.book;
     return AppState(book: book);
+  } else if (action is Loading) {
+    return AppState(isLoading: true);
+  } else if (action is LoadingSucess) {
+    return AppState();
+  } else if (action is LoadingFailed) {
+    return AppState(isError: true);
   }
   return appState;
+}
+
+ThunkAction<AppState> waitAndDispatch(int secondsToWait) {
+  return (Store<AppState> store) async {
+    store.dispatch(Loading());
+    try {
+      var response = await http
+          .get('https://www.googleapis.com/books/v1/volumes?q={http}');
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var itemCount = jsonResponse['totalItems'];
+        print('Number of books about http: $itemCount.');
+        store.dispatch(LoadingSucess());
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        store.dispatch(LoadingFailed());
+      }
+    } catch (e) {
+      print(e);
+      store.dispatch(LoadingFailed());
+    }
+  };
 }

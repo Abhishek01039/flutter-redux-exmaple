@@ -15,3 +15,9 @@ class DeleteBook {
   const DeleteBook(this.id);
   final int id;
 }
+
+class Loading {}
+
+class LoadingSucess {}
+
+class LoadingFailed {}
