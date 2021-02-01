@@ -5,9 +5,9 @@ import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
 
 class BookScreen extends StatelessWidget {
-  BookScreen({Key key, this.id}) : super(key: key);
+  BookScreen({Key? key, this.id}) : super(key: key);
 
-  final int id;
+  final int? id;
   final TextEditingController authorController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -17,8 +17,8 @@ class BookScreen extends StatelessWidget {
     if (id != null) {
       for (var item in StoreProvider.of<AppState>(context).state.book) {
         if (item.id == id) {
-          authorController.text = item.author;
-          nameController.text = item.name;
+          authorController.text = item.author!;
+          nameController.text = item.name!;
           priceController.text = item.price.toString();
         }
       }

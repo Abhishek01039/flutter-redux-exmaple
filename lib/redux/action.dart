@@ -8,7 +8,7 @@ class AddBook {
 class UpdateBook {
   const UpdateBook(this.book, this.id);
   final Book book;
-  final int id;
+  final int? id;
 }
 
 class DeleteBook {
@@ -18,6 +18,10 @@ class DeleteBook {
 
 class Loading {}
 
-class LoadingSucess {}
+class LoadingSucess {
+  LoadingSucess(this.data);
+
+  final dynamic data;
+}
 
 class LoadingFailed {}

@@ -23,14 +23,14 @@ AppState bookReducer(AppState appState, dynamic action) {
   } else if (action is Loading) {
     return AppState(isLoading: true);
   } else if (action is LoadingSucess) {
-    return AppState();
+    return AppState(data: action.data);
   } else if (action is LoadingFailed) {
     return AppState(isError: true);
   }
   return appState;
 }
 
-ThunkAction<AppState> waitAndDispatch(int secondsToWait) {
+ThunkAction<AppState> waitAndDispatch() {
   return (Store<AppState> store) async {
     store.dispatch(Loading());
     try {
@@ -40,7 +40,7 @@ ThunkAction<AppState> waitAndDispatch(int secondsToWait) {
         var jsonResponse = jsonDecode(response.body);
         var itemCount = jsonResponse['totalItems'];
         print('Number of books about http: $itemCount.');
-        store.dispatch(LoadingSucess());
+        store.dispatch(LoadingSucess(jsonResponse['totalItems']));
       } else {
         print('Request failed with status: ${response.statusCode}.');
         store.dispatch(LoadingFailed());

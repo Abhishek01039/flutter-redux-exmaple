@@ -1,9 +1,9 @@
 class Book {
   const Book({this.id, this.name, this.author, this.price});
-  final int id;
-  final String name;
-  final String author;
-  final int price;
+  final int? id;
+  final String? name;
+  final String? author;
+  final int? price;
 }
 
 const List<Book> bookData = [

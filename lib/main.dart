@@ -6,6 +6,7 @@ import 'package:redux_example/redux/action.dart';
 import 'package:redux_example/redux/app_state.dart';
 import 'package:redux_example/redux/reducer.dart';
 import 'package:redux_example/screens/book_screen.dart';
+import 'package:redux_example/widgets/book_widget.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 void main() {
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return StoreProvider(
       store: store,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: HomePage(),
       ),
     );
@@ -36,10 +38,16 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Redux"),
         actions: [
-          IconButton(
-            onPressed: () => StoreProvider.of<AppState>(context)
-                .dispatch(waitAndDispatch(2)),
-            icon: Icon(Icons.ac_unit),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => Colors.green,
+              ),
+            ),
+            onPressed: () => StoreProvider.of<AppState>(context).dispatch(
+              waitAndDispatch(),
+            ),
+            child: Text('API CALL'),
           )
         ],
       ),
@@ -49,47 +57,36 @@ class HomePage extends StatelessWidget {
             return Center(
               child: Text('Something went wrong'),
             );
-          }
-          if (state.state.isLoading) {
+          } else if (state.state.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
+          } else if (state.state.data != null) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text('This data is coming from API'),
+                      Text(state.state.data.toString()),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Expanded(
+                    child: BookWidget(
+                      state: state,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  state.state.book[index].name,
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BookScreen(
-                            id: state.state.book[index].id,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      color: Colors.red,
-                      onPressed: () {
-                        StoreProvider.of<AppState>(context).dispatch(
-                          DeleteBook(
-                            state.state.book[index].id,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-            itemCount: state.state.book.length,
+          return BookWidget(
+            state: state,
           );
         },
       ),
